@@ -21,4 +21,9 @@ object Dependencies {
   val twitter4jCore = twitter4jBranch("twitter4j-core")
   val twitter4jStream = twitter4jBranch("twitter4j-stream")
 
+  val scalacticVersion = "3.2.19"
+  val scalaTestVersion = "3.2.19"
+
+  val scalactic = "org.scalactic" %% "scalactic" % scalacticVersion
+  val scalaTest = "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
 }
