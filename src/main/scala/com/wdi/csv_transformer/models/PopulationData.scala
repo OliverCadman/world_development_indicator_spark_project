@@ -1,8 +1,9 @@
 package com.wdi.csv_transformer.models
 
 case class PopulationData(
-                         countryName: String,
-                         countryCode: String,
-                         indicatorName: String,
-                         indicatorCode: String
+                         countryName: Option[String],
+                         countryCode: Option[String],
+                         indicatorName: Option[String],
+                         indicatorCode: Option[String],
+                         populationPerYear: Seq[YearlyPopulation]
                          )
