@@ -5,6 +5,8 @@
 /test/files/speclib/instrumented.jar
 /tools/*.jar
 
+data
+
 # Developer specific properties
 /build.properties
 /buildcharacter.properties
@@ -39,3 +41,5 @@ jitwatch.out
 
 .bsp
 .history
+
+.DS_Store
