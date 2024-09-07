@@ -38,6 +38,7 @@ data
 /build-sbt/
 local.sbt
 jitwatch.out
+target
 
 .bsp
 .history

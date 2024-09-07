@@ -16,6 +16,10 @@ lazy val preprocessor = (project in file ("preprocessor"))
     )
   ).dependsOn(runner)
 
+lazy val transformer = (project in file ("transformer"))
+  .settings(commonSettings)
+  .dependsOn(runner)
+
 lazy val runner = (project in file ("runner"))
   .settings(commonSettings)
   .settings(

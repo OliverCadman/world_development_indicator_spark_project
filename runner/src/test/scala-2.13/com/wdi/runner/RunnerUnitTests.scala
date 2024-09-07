@@ -1,9 +1,7 @@
 package com.wdi.runner
 
-import com.typesafe.config.ConfigException
-import io.circe.ParsingFailure
 import io.circe.generic.codec.DerivedAsObjectCodec.deriveCodec
-import org.scalactic.TypeCheckedTripleEquals
+import org.apache.spark.sql.SparkSession
 import org.scalatest.Inside._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -19,13 +17,22 @@ class RunnerUnitTests extends AnyWordSpec
                               bar: String
                             )
 
-  val runner = new ScriptRunner[TestConfigClass]
+  // Required just for mocking
+  case class TestCaseClass()
+
+  object TestRunner extends ScriptRunner[TestCaseClass] {
+    def run(config: TestCaseClass, sparkSession: SparkSession): Unit = ???
+  }
+
+  object TestRunnerForDecode extends ScriptRunner[TestConfigClass] {
+    override def run(config: TestConfigClass, sparkSession: SparkSession): Unit = ???
+  }
 
   "ScriptRunner.load" should {
     "Return a typesafe.config Config instance containing the values 'foo' and 'bar'" in {
 
-      val config = runner.loadConfig("tes-config")
-      println(config)
+      val config = TestRunner.loadConfig("reference")
+
       val configObject = config.getObject("testObject")
 
       assert (configObject.containsKey("foo"))
@@ -34,20 +41,21 @@ class RunnerUnitTests extends AnyWordSpec
   }
   "ScriptRunner.decodeConfig" should {
     "Return an instance of TestConfigClass containing keys foo and bar, with expected values" in {
-      val config = runner.loadConfig("test-config")
+
+      val config = TestRunnerForDecode.loadConfig("reference")
 
       val testCaseClassInstance = TestConfigClass(
         foo = 42, bar = "test"
       )
 
-      runner.decodeConfig(config, "testObject") should === (Right(testCaseClassInstance))
+      TestRunnerForDecode.decodeConfig(config, "testObject") should === (Right(testCaseClassInstance))
     }
 
     "Return an error if the requested config object does not exist" in {
-      val config = runner.loadConfig("test-config")
+      val config = TestRunner.loadConfig("test-config")
       val nonexistentPath = "nonExistent"
 
-      val decodeAttempt = runner.decodeConfig(config, nonexistentPath)
+      val decodeAttempt = TestRunner.decodeConfig(config, nonexistentPath)
 
       decodeAttempt should matchPattern {
         case Left(_) =>
@@ -60,5 +68,4 @@ class RunnerUnitTests extends AnyWordSpec
       }
     }
   }
-
 }
